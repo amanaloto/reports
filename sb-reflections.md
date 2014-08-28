@@ -18,7 +18,7 @@
 
 - Asynchronous return value
 - Coffee script
-- passing data to and from Javascript
+- Passing data to and from Javascript
 
 #### CSS
 
@@ -42,11 +42,13 @@
   - Pivotal stories
   - Finding and using specific gems for specific tasks
   - NOT using specific gems for specific tasks
+  - Have an idea of what others are doing
 - Git
   - rebase
   - reset
   - merge
   - “renaming” branches
+  - squash
   
 ## INSIGHTS
 
@@ -59,5 +61,6 @@
 - Pair Programming
 - Fine line between self-reliance and being stubborn
 - Self studying
+- When to seek help
 - OT hehe
 
