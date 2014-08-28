@@ -1,4 +1,4 @@
-# Smashbox Learnings/Insights/Exepriences
+# Smashbox Learnings/Insights/Experiences
 
 ## LEARNINGS
 
@@ -9,7 +9,8 @@
 - Decorators
 - STI
 - Asset Pipeline (requires and stubs)
-
+- Ruby
+  - right times to use "unless" instead of "if else", using ".present?" and ".nil?"
 
 ### Frontend
 
@@ -18,16 +19,16 @@
 - Asynchronous return value
 - Coffee script
 - passing data to and from Javascript
-- IE9 Specifics
-- Using custom fonts
-- Using em
 
 #### CSS
 
 - Position
 - Display (inline, block, and inline-block)
 - Transitions
+- Using custom fonts
+- Using em
 - Browser compatibility
+  - IE9 Specifics
   - CSS3 initial
   - flexbox
   - css conditionals
@@ -45,18 +46,18 @@
   - rebase
   - reset
   - merge
-  - “renaming” branches 
-- Ruby
-  - right times to use "unless" instead of "if else", using ".present?" and ".nil?"
+  - “renaming” branches
   
 ## INSIGHTS
 
 - Why not use CSS that are IE-compatible from the get go instead of using separate stylesheets?
 - A lot of smaller deploys instead of larger deploys.
+- Clearer idea of our personal velocity.
 
 ## EXPERIENCES
 
 - Pair Programming
 - Fine line between self-reliance and being stubborn
+- Self studying
 - OT hehe
 
