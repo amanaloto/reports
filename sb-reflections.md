@@ -41,11 +41,13 @@
   - Pivotal stories
   - Finding and using specific gems for specific tasks
   - NOT using specific gems for specific tasks
+  - Have an idea of what others are doing
 - Git
   - rebase
   - reset
   - merge
-  - “renaming” branches 
+  - “renaming” branches
+  - squashing
 - Ruby
   - right times to use "unless" instead of "if else", using ".present?" and ".nil?"
   
@@ -59,4 +61,5 @@
 - Pair Programming
 - Fine line between self-reliance and being stubborn
 - OT hehe
+- When to seek help
 
