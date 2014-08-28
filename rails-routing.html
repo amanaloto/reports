@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rails Routing</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .inverse {
+        background: #272822;
+        color: #777872;
+      }
+      .inverse h1, .inverse h2 {
+        color: #f3f3f3;
+        line-height: 0.8em;
+      }
+      /*.left-column{
+        color: #777;
+        width: 20%;
+        height: 92%;
+        float: left;
+      }*/
+      .multi-col{
+        -moz-column-count: 3;
+        column-gap: ;
+      }
+      .red { color: #fa0000; }
+      .blue { color: blue; }
+      .gray { color: gray; }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+title: Rails Routing
+name: title_slide
+class: center, middle, inverse
+
+# .red[Rails] Routing
+
+---
+
+class: middle, inverse
+
+# Outline
+
+1. Purpose
+2. Resource Routing
+3. Non-Resourceful Routes
+4. Customizing Resourceful Routes
+
+---
+
+class: center, middle, inverse
+
+# Purpose
+
+--
+
+RESTful Rails
+
+--
+
+CRUD
+
+--
+
+.red[_controller_]#.blue[_action_]
+
+---
+
+class: center, middle
+
+# Resource Routing
+
+---
+
+# Resource Routing
+
+## CRUD, Verbs, and Actions
+
+```ruby
+resources :posts
+```
+
+- GET _/posts_ **posts#index** .gray[posts_path]
+- GET _/posts/new_ **posts#new** .gray[new_post_path]
+- POST _/posts_ **posts#create** .gray[posts_path]
+- GET _/posts/:id_ **posts#show** .gray[post_path]
+- GET _/posts/:id/edit_ **posts#edit** .gray[edit_post_path]
+- PATCH/PUT _/posts/:id_ **posts#update** .gray[post_path]
+- DELETE _/posts/:id_ **posts#destroy** .gray[post_path]
+
+---
+
+# Resource Routing
+
+## (Path/URL) Helpers
+
+- .gray[photos_path] returns **/photos**
+- .gray[new_photo_path] returns **/photos/new**
+- .gray[edit_photo_path(:id)] returns **/photos/:id/edit**
+- .gray[photo_path(:id)] returns **/photos/:id**
+
+---
+
+# Resource Routing
+
+## Singular Resource
+
+```ruby
+resource :profile
+```
+
+- GET _/profile/new_ **profiles#new** .gray[new_profile_path]
+- POST _/profile_ **profiles#create** .gray[profile_path]
+- GET _/profile_ **profiles#show** .gray[profile_path]
+- GET _/profile/edit_ **profiles#edit** .gray[edit_profile_path]
+- PATCH/PUT _/profile_ **profiles#update** .gray[profile_path]
+- DELETE _/profile_ **profiles#destroy** .gray[profile_path]
+
+---
+
+# Resource Routing
+
+## Scope
+
+```ruby
+scope module: 'admin' do
+  resources :posts
+end
+```
+
+- GET _/posts_ **admin/posts#index** .gray[posts_path]
+
+```ruby
+scope '/admin' do
+  resources :posts
+end
+```
+
+- GET _/admin/posts_ **posts#index** .gray[posts_path]
+
+---
+
+# Resource Routing
+
+## Namespaces
+
+```ruby
+namespace :admin do
+  resources :posts
+end
+```
+
+- GET _/admin/posts_ **admin/posts#index** .gray[admin_posts_path]
+
+## Nested Resources
+
+```ruby
+resources :magazines do
+  resources :ads
+end
+```
+
+- normal resources :magazines routes with:
+- GET _/magazines/:magazine_id/ads_ **ads#index** .gray[magazine_ads_path]
+- GET _/magazines/:magazine_id/ads/new_ **ads#new** .gray[new_magazine_ad_path]
+
+---
+
+# Resource Routing
+
+## Routing Concerns
+
+```ruby
+concern :commentable do
+  resources :comments
+end
+
+concern :image_attachable do
+  resources :images, only: :index
+end
+```
+can be used as:
+
+```ruby
+resources :messages, concerns: :commentable
+resources :posts, concerns: [:commentable, :image_attachable]
+```
+
+---
+
+# Resource Routing
+
+## Routing Concerns
+
+Equivalent to:
+
+```ruby
+resources :messages do 
+  resources :comments
+end
+
+resources :posts do
+  resources :comments
+  resources :images, only: :index
+end
+```
+
+Concerns can also be used in namespaces:
+
+```ruby
+namespace :posts do
+  concerns :commentable
+end
+```
+
+---
+
+# Resource Routing
+
+## Creating Paths from Objects
+
+```ruby
+resources :magazines do
+  resources :ads
+end
+```
+
+```ruby
+<%= link_to 'Ad details', magazine_ad_path(@magazine, @ad) %>
+<%= link_to 'Ad details', url_for([@magazine, @ad]) %>
+<%= link_to 'Ad details', [@magazine, @ad] %>
+<%= link_to 'Magazine details', @magazine %>
+<%= link_to 'Edit Ad', [:edit, @magazine, @ad] %>
+```
+
+---
+
+# Resource Routing
+
+## More RESTful Actions
+
+### member
+
+```ruby
+resources :photos do
+  member do
+    get 'preview'
+  end
+end
+
+resources :photos do
+  get 'preview', :on => :member
+end
+```
+
+- GET _/photos/1/preview_ **photos#preview** .gray[preview_photo_path]
+
+???
+
+without the on option -> params[:photo_id]
+with :on => :member -> params[:id]
+
+---
+
+# Resource Routing
+
+## More RESTful Actions
+
+### collection
+
+```ruby
+resources :photos do
+  collection do
+    get 'search'
+  end
+end
+
+resources :photos do
+  get 'search', :on => :collection
+end
+```
+
+- GET _/photos/search_ **photos#search** .gray[search_photo_path]
+
+---
+
+# Resource Routing
+
+## More RESTful Actions
+
+```ruby
+resources :comments do
+  get 'preview', :on => :new
+end
+```
+
+- GET _/comments/new/preview_ **comments#preview** .gray[preview_new_comment]
+
+---
+
+class: center, middle, inverse
+
+# Non-Resourceful Routes
+
+---
+
+class: inverse
+
+# Non-Resourceful Routes
+
+## Bound Parameters
+
+```ruby
+get ':controller(/:action(/:id))'
+```
+- processes /photos/show/1
+- processes /photos/index since :id is optional
+- processes /photos since :action and :id is optional
+
+## Query String
+
+```ruby
+get ':controller/:action/:id'
+```
+- processes /photos/show/1?user_id=2
+  - {controller: 'photos', action: 'show', id: '1', user_id: '2'}
+
+---
+
+class: inverse
+
+# Non-Resourceful Routes
+
+## Dynamic Segments
+
+```ruby
+get ':controller/:action/:id/:user_id'
+```
+- processes photos/show/1/2
+
+## Static Segments
+
+```ruby
+get ':controller/:action/:id/with_user/:user_id'
+```
+- processes photos/show/1/with_user/2
+
+---
+
+class: inverse
+
+# Non-Resourceful Routes
+
+## Defining Defaults
+
+```ruby
+get 'photos/:id', to: 'photos#show'
+```
+
+Other defaults:
+```ruby
+get 'photos/:id', to: 'photos#show', :defaults => { :format => 'jpg'}
+```
+
+## Naming Routes
+
+```ruby
+get 'exit', to: 'sessions#destroy', :as => :logout
+```
+
+- GET /exit sessions#destroy
+  - logout_path &amp; logout_url
+
+---
+
+class: inverse
+
+# Non-Resourceful Routes
+
+## Verb Constraints
+
+```ruby
+match 'photos', to: 'photos#show', via: [:get, :post]
+match 'photos', to: 'photos#show', via: :all
+```
+
+## Segment Constraints
+
+```ruby
+get 'photos/:id', to: 'photos#show', constraints: { id: /[A-Z]\d{5}/ }
+get 'photos/:id', to: 'photos#show', id: /[A-Z]\d{5}/
+```
+
+## Request-Based Constraints
+
+```ruby
+get 'photos', constraints: {subdomain: 'admin'}
+```
+
+---
+
+class: inverse
+
+# Non-Resourceful Routes
+
+## Advanced Constraints
+
+```ruby
+class BlacklistConstraint
+  def initialize
+    @ips = Blacklist.retrieve_ips
+  end
+
+  def matches?(request)
+    @ips.include?(request.remote_ip)
+  end
+end
+
+TwitterClone::Application.routes.draw do
+  get '*path', to: 'blacklist#index',
+    constraints: BlacklistConstraint.new
+end
+```
+
+---
+
+class: inverse
+
+# Non-Resourceful Routes
+
+## Route Globbing and Wildcard Segments
+
+```ruby
+get 'photos/*other', to: 'photos#unknown'
+```
+- matches _photos/long/path/to/12_ with **params[.blue[:other]]** as **.blue[long/path/to/12]**
+
+```ruby
+get 'books/*section/title', to: 'books#show'
+```
+- matches _books/some/section/book-title_ with **params[.blue[:section]]** as **.blue[some/section]** and **params[.red[:title]]** as **.red[book-title]**
+
+```ruby
+get '*a/foo/*b', to: 'test#index'
+```
+- matches _/hacked/by/foo/aiden/lolz_ with **params[.blue[:a]]** as **.blue[hacked/by]** and **params[.red[:b]]** as **.red[aiden/lolz]**
+
+---
+
+class: center, middle
+
+# Customizing Resourceful Routes
+
+---
+
+# Customizing
+
+## Specifying the Controller
+
+```ruby
+resources :photos, :controller => 'images'
+```
+
+- GET _/photos_ **images#index** photos_path
+
+## Specifying Constraints
+
+```ruby
+resources :photos, :constraints => { id: /[A-Z][0-9]+/ }
+
+constraints(id: /[A-Z][0-9]+/ ) do
+  resources :photos
+  resources :accounts
+end
+```
+
+---
+
+# Customizing
+
+## Overriding the Named Helpers
+
+```ruby
+resources :photos, :as => 'images'
+```
+- images_path &amp; images_url
+
+## Overriding the _new_ and _edit_ Segments
+
+```ruby
+resources :photos, path_names: { new: 'make', edit: 'change' }
+```
+- /photos/make
+- /photos/1/change
+- paths for **new** and **edit** are unchanged
+
+---
+
+# Customizing
+
+## Prefixing the Named Route Helpers
+
+```ruby
+scope 'admin' do
+  resources :photos, as: 'admin_photos'
+end
+
+resources :photos
+```
+- admin_photos_path
+- new_admin_photo
+
+---
+
+# Customizing
+
+## Limit Created Routes
+
+```ruby
+resources :photos, only: [:index, :show]
+```
+- POST /photos will fail (no more :create)
+
+```ruby
+resources :photos, except: :destroy
+```
+
+---
+
+# Customizing
+
+## Translated Paths
+
+```ruby
+scope(path_names: { new: 'bago', edit: 'baguhin' }) do
+  resources :categories, path: 'kategorya'
+end
+```
+
+## Using :as in Nested Resources
+
+```ruby
+resources :magazines do
+  resources :ads, as: 'periodical_ads'
+end
+```
+
+---
+
+class: center, middle
+
+# END
+
+---
+
+class: middle
+
+# References
+
+- http://guides.rubyonrails.org/routing.html
+- http://stackoverflow.com/questions/9194767/difference-between-resource-and-resources-methods
+- http://stackoverflow.com/questions/3028653/difference-between-collection-route-and-member-route-in-ruby-on-rails
+
+
+<!-- .footnote[.red.bold[*] Important footnote] -->
+
+    </textarea>
+    <script src="http://gnab.github.io/remark/downloads/remark-latest.min.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
