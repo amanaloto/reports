@@ -1,19 +1,10 @@
 # Photoshop: Basics
 
+
 ## Overview
-1. Layers
-2. Tools
+1. Tools
+2. Layers
 3. Selection
-
-
-## Layers
-Stacked-up 'films' for cleaner and separated editing
-
-- Copy CSS
-- Layer Masks
-- Layer Grouping
-- Layer Merging
-- Click + drag for layer visibility
 
 
 ## Tools
@@ -39,7 +30,8 @@ Also for selection
 
 ### Eyedropper Tool (I)
 Get color
-- Ruler Tool for measuring pixels / angle measurements
+
+#### Ruler Tool
   - Use Shift to constraint the ruler to factors of 45 degrees
   - Use Alt/Option to create an angle to be measured
 
@@ -57,6 +49,18 @@ For navigation
 For zooming
 - Shortcut: Alt + Mouse Wheel
 - Use Alt/Option to quickly switch between zoom in or out
+
+
+## Layers
+Stacked-up 'films' for cleaner and separated editing
+
+- Copy CSS
+- Click + drag for layer visibility
+- Command + click on layer thumbnail 
+
+### Layer Masks
+### Layer Grouping
+### Layer Merging
 
 
 ## Selection
